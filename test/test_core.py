@@ -4,8 +4,8 @@ from organizer.core import organizar_archivos
 
 def test_file_organization():
     with tempfile.TemporaryDirectory() as tmpdir:
-        # crear archivo fake
         file_path = os.path.join(tmpdir, "test.pdf")
+
         with open(file_path, "w") as f:
             f.write("test")
 
@@ -15,6 +15,5 @@ def test_file_organization():
 
         organizar_archivos(tmpdir, config)
 
-        # verificar que se movió
-        expected_path = os.path.join(tmpdir, "documents", "test.pdf")
-        assert os.path.exists(expected_path)
+        expected = os.path.join(tmpdir, "documents", "test.pdf")
+        assert os.path.exists(expected)
