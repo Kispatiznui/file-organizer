@@ -1,50 +1,79 @@
-import os
+ import os
 import shutil
+import logging
 from datetime import datetime
+from organizer.utils import get_extension, ensure_directory, is_valid_file
+
 
 def get_category(extension, config):
     for category, extensions in config.items():
-        if extension.lower() in extensions:
+        if extension in [ext.lower() for ext in extensions]:
             return category
     return "others"
 
+
 def organizar_archivos(ruta, config):
+    if not os.path.exists(ruta):
+        raise ValueError("Invalid path")
+
     for archivo in os.listdir(ruta):
         ruta_completa = os.path.join(ruta, archivo)
 
-        if os.path.isfile(ruta_completa):
-            extension = archivo.split('.')[-1]
+        if is_valid_file(ruta_completa):
+            extension = get_extension(archivo)
             categoria = get_category(extension, config)
 
             destino = os.path.join(ruta, categoria)
-            os.makedirs(destino, exist_ok=True)
+            ensure_directory(destino)
 
-            shutil.move(ruta_completa, os.path.join(destino, archivo))
+            destino_final = os.path.join(destino, archivo)
 
-# 🔥 limpiar duplicados simple
+            try:
+                shutil.move(ruta_completa, destino_final)
+                logging.info(f"Moved: {archivo} → {categoria}")
+            except Exception as e:
+                logging.error(f"Error moving {archivo}: {e}")
+
+
 def limpiar_duplicados(ruta):
+    if not os.path.exists(ruta):
+        raise ValueError("Invalid path")
+
     vistos = set()
 
     for archivo in os.listdir(ruta):
         ruta_completa = os.path.join(ruta, archivo)
 
-        if os.path.isfile(ruta_completa):
+        if is_valid_file(ruta_completa):
             if archivo in vistos:
-                os.remove(ruta_completa)
+                try:
+                    os.remove(ruta_completa)
+                    logging.info(f"Deleted duplicate: {archivo}")
+                except Exception as e:
+                    logging.error(f"Error deleting {archivo}: {e}")
             else:
                 vistos.add(archivo)
 
-# 🔥 organizar por fecha
+
 def organizar_por_fecha(ruta):
+    if not os.path.exists(ruta):
+        raise ValueError("Invalid path")
+
     for archivo in os.listdir(ruta):
         ruta_completa = os.path.join(ruta, archivo)
 
-        if os.path.isfile(ruta_completa):
-            timestamp = os.path.getmtime(ruta_completa)
-            fecha = datetime.fromtimestamp(timestamp).strftime("%Y-%m")
+        if is_valid_file(ruta_completa):
+            try:
+                timestamp = os.path.getmtime(ruta_completa)
+                fecha = datetime.fromtimestamp(timestamp).strftime("%Y-%m")
 
-            destino = os.path.join(ruta, fecha)
-            os.makedirs(destino, exist_ok=True)
+                destino = os.path.join(ruta, fecha)
+                ensure_directory(destino)
 
-            shutil.move(ruta_completa, os.path.join(destino, archivo))
+                shutil.move(ruta_completa, os.path.join(destino, archivo))
+                logging.info(f"Moved: {archivo} → {fecha}")
+
+            except Exception as e:
+                logging.error(f"Error processing {archivo}: {e}")
+
 
