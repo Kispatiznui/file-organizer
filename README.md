@@ -28,4 +28,5 @@ Python CLI tool for automated file organization and directory cleanup using conf
 
 ```bash
 git clone https://github.com/YOUR-USERNAME/file-organizer.git
-cd file-organizer
+cd file-organizer or
+pip install file-organizer-cli
