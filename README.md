@@ -1,4 +1,4 @@
-# 📁 File Organizer
+#File Organizer
 
 Python CLI tool for automated file organization using configurable rules and JSON settings.
 
