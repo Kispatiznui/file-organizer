@@ -47,3 +47,4 @@ def organizar_por_fecha(ruta):
             os.makedirs(destino, exist_ok=True)
 
             shutil.move(ruta_completa, os.path.join(destino, archivo))
+
