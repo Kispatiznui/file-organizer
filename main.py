@@ -1,6 +1,18 @@
 import argparse
 import json
-from organizer.core import organizar_archivos, limpiar_duplicados, organizar_por_fecha
+import logging
+from organizer.core import (
+    organizar_archivos,
+    limpiar_duplicados,
+    organizar_por_fecha
+)
+
+def setup_logging():
+    logging.basicConfig(
+        filename="app.log",
+        level=logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(message)s"
+    )
 
 def load_config():
     with open("config.json") as f:
@@ -13,6 +25,8 @@ def main():
     parser.add_argument("--mode", choices=["organize", "clean", "date"], default="organize")
 
     args = parser.parse_args()
+
+    setup_logging()
     config = load_config()
 
     if args.mode == "organize":
@@ -26,4 +40,6 @@ def main():
 
     print("✅ Done")
 
+if __name__ == "__main__":
     main()
+
