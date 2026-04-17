@@ -1,6 +1,6 @@
 import os
 import shutil
-import logging
+from datetime import datetime
 
 def get_category(extension, config):
     for category, extensions in config.items():
@@ -9,23 +9,41 @@ def get_category(extension, config):
     return "others"
 
 def organizar_archivos(ruta, config):
-    if not os.path.exists(ruta):
-        raise ValueError("Invalid path")
-
     for archivo in os.listdir(ruta):
         ruta_completa = os.path.join(ruta, archivo)
 
         if os.path.isfile(ruta_completa):
             extension = archivo.split('.')[-1]
-
             categoria = get_category(extension, config)
-            carpeta_destino = os.path.join(ruta, categoria)
 
-            if not os.path.exists(carpeta_destino):
-                os.makedirs(carpeta_destino)
+            destino = os.path.join(ruta, categoria)
+            os.makedirs(destino, exist_ok=True)
 
-            destino_final = os.path.join(carpeta_destino, archivo)
+            shutil.move(ruta_completa, os.path.join(destino, archivo))
 
-            shutil.move(ruta_completa, destino_final)
+# 🔥 limpiar duplicados simple
+def limpiar_duplicados(ruta):
+    vistos = set()
 
-            logging.info(f"Moved: {archivo} → {categoria}")
+    for archivo in os.listdir(ruta):
+        ruta_completa = os.path.join(ruta, archivo)
+
+        if os.path.isfile(ruta_completa):
+            if archivo in vistos:
+                os.remove(ruta_completa)
+            else:
+                vistos.add(archivo)
+
+# 🔥 organizar por fecha
+def organizar_por_fecha(ruta):
+    for archivo in os.listdir(ruta):
+        ruta_completa = os.path.join(ruta, archivo)
+
+        if os.path.isfile(ruta_completa):
+            timestamp = os.path.getmtime(ruta_completa)
+            fecha = datetime.fromtimestamp(timestamp).strftime("%Y-%m")
+
+            destino = os.path.join(ruta, fecha)
+            os.makedirs(destino, exist_ok=True)
+
+            shutil.move(ruta_completa, os.path.join(destino, archivo))
