@@ -1,12 +1,31 @@
-#File Organizer
+#  File Organizer
 
-Python CLI tool for automated file organization using configurable rules and JSON settings.
+Python CLI tool for automated file organization and directory cleanup using configurable rules and JSON settings.
 
-## 🚀 Usage
+---
 
-python main.py --path "your/folder/path"
+## Features
 
-## 🛠️ Technologies
-- Python
-- OS
-- Shutil
+- Automatic file organization by extension  
+- Configurable behavior using `config.json`  
+- Command-line interface (CLI)  
+- Modular and scalable structure  
+- Logging system for tracking operations  
+
+---
+
+## Technologies
+
+- Python  
+- OS / Shutil  
+- JSON  
+- Argparse  
+- Logging  
+
+---
+
+## Installation
+
+```bash
+git clone https://github.com/YOUR-USERNAME/file-organizer.git
+cd file-organizer
